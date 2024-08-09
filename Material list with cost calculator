@@ -227,7 +227,7 @@ def generate_estimate():
             cost = calculate_cost(material, quantity, waste, material_dict[material], material_prices)
             if cost is not None:
                 total_cost += cost
-                material_costs[material] = cost
+                material_costs[material] = (quantity, cost) 
 
         # Add dump fee and delivery fee
         total_cost += dump_fee + delivery_fee
@@ -325,15 +325,15 @@ def generate_pdf(filename, customer_name, job_name, material_costs, labor_cost, 
         c.drawString(50, height - 90, f"Job: {job_name}")
         c.drawString(50, height - 110, f"Date: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
-        # Add materials and costs
+        # Add materials, quantities, and costs
         y = height - 200
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y, "Materials and Costs")
+        c.drawString(50, y, "Materials, Quantities, and Costs")
         c.setFont("Helvetica", 12)
         y -= 20
 
-        for material, cost in material_costs.items():
-            c.drawString(50, y, f"{material}: ${cost:.2f}")
+        for material, (quantity, cost) in material_costs.items():
+            c.drawString(50, y, f"{material}: {quantity} units - ${cost:.2f}")
             y -= 20
 
         # Add labor cost, dump fee, delivery fee, tax, total cost, and profit
